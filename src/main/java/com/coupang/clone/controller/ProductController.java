@@ -1,8 +1,11 @@
 package com.coupang.clone.controller;
 
+import com.coupang.clone.Service.MemberService;
 import com.coupang.clone.domain.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 
@@ -10,9 +13,4 @@ import java.util.ArrayList;
 public class ProductController {
 
 
-    @GetMapping("/ProductList")
-    public ArrayList<Product> getProductList(){
-        ArrayList<Product> list = new ArrayList<>();
-        return list;
-    }
 }

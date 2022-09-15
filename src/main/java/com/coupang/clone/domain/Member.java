@@ -1,19 +1,19 @@
 package com.coupang.clone.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberID;
+    private Long seqID;
+    private String memberID;
     private String name;
     private String password;
     private String gender;
@@ -23,8 +23,10 @@ public class Member {
     private String birth;
     private String type;
 
-    public Member(Long memberID, String name, String gender, String phoneNumber, String email, String address, String birth, String type) {
+    @Builder
+    public Member(String memberID, String password,String name, String gender, String phoneNumber, String email, String address, String birth, String type) {
         this.memberID = memberID;
+        this.password = password;
         this.name = name;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
