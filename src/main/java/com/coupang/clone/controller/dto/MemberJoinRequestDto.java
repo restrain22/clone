@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberJoinRequestDto {
-    private String memberID;
+    private String loginId;
     private String name;
     private String password;
     private String gender;
@@ -19,8 +19,8 @@ public class MemberJoinRequestDto {
     private String type;
 
     @Builder
-    public MemberJoinRequestDto(String memberID, String password,String name, String gender, String phoneNumber, String email, String address, String birth, String type) {
-        this.memberID = memberID;
+    public MemberJoinRequestDto(String loginId, String password,String name, String gender, String phoneNumber, String email, String address, String birth, String type) {
+        this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.gender = gender;
@@ -33,7 +33,9 @@ public class MemberJoinRequestDto {
 
     public Member toEntity(){
         return Member.builder()
+                .loginId(loginId)
                 .name(name)
+                .password(loginId)
                 .gender(gender)
                 .phoneNumber(phoneNumber)
                 .email(email)
