@@ -1,9 +1,8 @@
 package com.coupang.clone.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,30 +12,26 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(exclude = {"list"})
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id")
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="member_id")
     private Member member;
 
+    private int count;
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "cart")
     private List<CartProduct> list = new ArrayList<>();
 
     @Builder
-    public Cart(Member member) {
+    public Cart(Member member, int count) {
         this.member = member;
-    }
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", member=" + member +
-                ", list=" + list +
-                '}';
+        this.count = count;
     }
 }

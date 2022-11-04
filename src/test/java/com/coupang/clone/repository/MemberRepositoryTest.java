@@ -1,7 +1,9 @@
 package com.coupang.clone.repository;
 
 import com.coupang.clone.Repository.MemberRepository;
+import com.coupang.clone.domain.Gender;
 import com.coupang.clone.domain.Member;
+import com.coupang.clone.domain.Type;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -25,15 +27,14 @@ class MemberRepositoryTest {
     @Test
     void 회원등록() {
         Member member = Member.builder()
-                .loginId("a2")
-                .password("a2")
-                .birth("2")
+                .loginId("admin")
+                .birth("0000-00-00")
                 .address("집")
                 .email("메일")
-                .gender("성별")
-                .name("이름2")
-                .phoneNumber("전화번호")
-                .type("타입")
+                .gender(Gender.Man)
+                .name("관리자")
+                .phoneNumber("000-000-0000")
+                .type(Type.ADMIN)
                 .build();
 
         memberRepository.save(member);
@@ -53,8 +54,8 @@ class MemberRepositoryTest {
 
     @Test
     void 회원이름검색() {
-        Optional<Member> member = memberRepository.findByName("이름");
-        assertThat(member.get().getId()).isEqualTo(1L);
+        List<Member> member = memberRepository.findByName("이름");
+        assertThat(member.get(0).getId()).isEqualTo(1L);
     }
 
     @Test

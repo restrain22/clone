@@ -1,5 +1,6 @@
 package com.coupang.clone.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -11,33 +12,31 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CartProduct {
-
+@ToString(exclude = {})
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_product_id")
+    @Column(name = "comment_id")
     private Long id;
+
+    private String reply;
+    private double rate;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int count;
-
     @Builder
-    public CartProduct(Cart cart, Product product, int count) {
-        this.cart = cart;
+    public Comment(String reply, double rate, Member member, Product product) {
+        this.reply = reply;
+        this.rate = rate;
+        this.member = member;
         this.product = product;
-        this.count = count;
-    }
-
-    public void updateCount(int count) {
-        this.count += count;
     }
 }

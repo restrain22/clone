@@ -2,23 +2,18 @@ package com.coupang.clone.controller;
 
 import com.coupang.clone.Repository.MemberRepository;
 import com.coupang.clone.controller.dto.MemberChangePasswordDto;
-import com.coupang.clone.controller.dto.MemberJoinRequestDto;
-import com.coupang.clone.domain.Member;
-import org.junit.After;
-import org.junit.jupiter.api.DisplayName;
+import com.coupang.clone.controller.dto.MemberRequestDto;
+import com.coupang.clone.domain.Gender;
+import com.coupang.clone.domain.Grade;
+import com.coupang.clone.domain.Type;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MemberControllerTest {
@@ -38,20 +33,16 @@ class MemberControllerTest {
 
     @Test
     void 회원가입() {
-        String name = "이름";
-        String phoneNumber = "000-0000-0000";
-
-
-        MemberJoinRequestDto dto = MemberJoinRequestDto.builder()
-                .loginId("a1")
-                .password("a1")
-                .birth("1994-06-22")
-                .address("집")
-                .email("메일")
-                .gender("성별")
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .type("타입")
+        MemberRequestDto dto = MemberRequestDto.builder()
+                .loginId("admin")
+//                .birth("0000-00-00")
+//                .address("집")
+                .email("restrain22@naver.com")
+                .gender(Gender.Man)
+                .name("관리자")
+//                .phoneNumber("000-0000-0000")
+                .type(Type.PURCHASER)
+                .grade(Grade.VIP)
                 .build();
 
         String url = "http://localhost:"+port+"/member/new";
@@ -77,7 +68,7 @@ class MemberControllerTest {
     void 비밀번호변경(){
 
         MemberChangePasswordDto memberChangePasswordDto = new MemberChangePasswordDto();
-        memberChangePasswordDto.setMemberId("a1");
+        memberChangePasswordDto.setLoginId("37759");
         memberChangePasswordDto.setPassword("a2a3a4a5!");
 
         HttpHeaders headers = new HttpHeaders();
@@ -96,7 +87,7 @@ class MemberControllerTest {
     @Test
     void 비밀번호초기화(){
 
-        String memberID = "a1";
+        String memberID = "37759";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

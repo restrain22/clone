@@ -2,13 +2,13 @@ package com.coupang.clone.Service;
 
 import com.coupang.clone.Repository.MemberRepository;
 import com.coupang.clone.controller.dto.MemberChangePasswordDto;
-import com.coupang.clone.controller.dto.MemberJoinRequestDto;
+import com.coupang.clone.controller.dto.MemberRequestDto;
+import com.coupang.clone.domain.Grade;
 import com.coupang.clone.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,40 +20,67 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @Transactional
-    public Long save(MemberJoinRequestDto dto) {
+    public Long save(MemberRequestDto dto) {
         Member member = dto.toEntity();
-
         validateDuplicateMember(member);
-
-        memberRepository.save(member);
-        return member.getId();
+        Member save = memberRepository.save(member);
+        return save.getId();
     }
 
-    private void validateDuplicateMember(Member member){
-        memberRepository.findByLoginId(member.getLoginId())
-                .ifPresent(member1 -> {
-                    throw new IllegalStateException("이미 존재하는 회원입니다.");
-                });
+//    @Override
+//    public Long update(MemberRequestDto memberRequestDto) {
+//        Long id = memberRepository.findByLoginId(memberRequestDto.getLoginId()).get().getId();
+//        memberRequestDto.setId(id);
+//        Member member = memberRequestDto.toEntity();
+//        return memberRepository.save(member).getId();
+//    }
+
+    @Override
+    public Member findMemberByLoginId(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseGet(() -> {
+            throw new IllegalStateException("해당 사용자가 없습니다.");
+        });
+        return member;
     }
 
     @Override
-    public Optional<Member> findMemberByLoginId(String loginId) {
-        return memberRepository.findByLoginId(loginId);
+    public Member findMemberById(Long id) {
+        Member member = memberRepository.findById(id).orElseGet(() -> {
+            throw new IllegalStateException("해당 사용자가 없습니다.");
+        });
+        return member;
     }
 
     @Override
-    public Optional<Member> findMemberByName(String name) {
+    public List<Member> findAllMember() {
+        return memberRepository.findAll();
+    }
+
+    @Override
+    public List<Member> findMemberByName(String name) {
         return memberRepository.findByName(name);
     }
 
     @Override
-    @Transactional
-    public void changePassword(MemberChangePasswordDto memberChangePasswordDto) {
+    public String deleteMember(Long id){
+        //Cannot delete or update a parent row: a foreign key constraint fails (`clonedb`.`payment`, CONSTRAINT `FK4pswry4r5sx6j57cdeulh1hx8` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`))
+        //다른 테이블 조인되어 있는 것 cascade 삭제 검토 "cart 자동 생성"
+        memberRepository.findById(id).ifPresentOrElse(
+                member -> memberRepository.deleteById(id)
+                , () -> {
+                    throw new IllegalStateException("해당 사용자가 없습니다.");
+                }
+        );
+        return "Success";
+    }
 
-        memberRepository.findByLoginId(memberChangePasswordDto.getMemberId()).ifPresentOrElse(
+    @Override
+    @Transactional
+    public String changePassword(MemberChangePasswordDto memberChangePasswordDto) {
+        memberRepository.findByLoginId(memberChangePasswordDto.getLoginId()).ifPresentOrElse(
                 member -> {
                     String retVal = "";
-                    if (!(retVal=checkPassword(memberChangePasswordDto.getMemberId(),memberChangePasswordDto.getPassword())).equals("")){
+                    if (!(retVal=checkPassword(memberChangePasswordDto.getLoginId(),memberChangePasswordDto.getPassword())).equals("")){
                         throw new IllegalArgumentException(retVal);
                     }
                     member.changePassword(memberChangePasswordDto.getPassword());
@@ -62,12 +89,12 @@ public class MemberServiceImpl implements MemberService{
                 , () -> {
                     throw new IllegalStateException("해당 사용자가 없습니다.");
                 });
+        return "Success";
     }
 
     @Override
     @Transactional
-    public void resetPassword(String loginId) {
-
+    public String resetPassword(String loginId) {
         memberRepository.findByLoginId(loginId).ifPresentOrElse(
                 member -> {
                     String retVal = "";
@@ -80,8 +107,27 @@ public class MemberServiceImpl implements MemberService{
                 , () -> {
                     throw new IllegalStateException("해당 사용자가 없습니다.");
                 });
+        return "Success";
     }
 
+    @Override
+    @Transactional
+    public String changeGrade(Long id,Grade grade){
+        Member member = memberRepository.findById(id).orElseGet(
+                () -> {
+                    throw new IllegalStateException("해당 사용자가 없습니다.");
+                }
+        );
+        member.changeGrade(grade);
+        return "Success";
+    }
+
+    private void validateDuplicateMember(Member member){
+        memberRepository.findByLoginId(member.getLoginId())
+                .ifPresent(member1 -> {
+                    throw new IllegalStateException("이미 존재하는 회원입니다.");
+                });
+    }
 
     private String checkPassword(String id, String pwd){
 
@@ -157,5 +203,16 @@ public class MemberServiceImpl implements MemberService{
         return "";
     }
 
+    @Override
+    @Transactional
+    public String changePersonalInfo(Long id, String phoneNumber, String email, String address){
+        Member member = memberRepository.findById(id).orElseGet(
+                () -> {
+                    throw new IllegalStateException("해당 사용자가 없습니다.");
+                }
+        );
+        member.changePersonalInfo(phoneNumber,email,address);
+        return "Success";
+    }
 }
 

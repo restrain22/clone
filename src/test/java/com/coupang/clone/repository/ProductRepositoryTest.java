@@ -19,10 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class ProductRepositoryTest {
+class productRepositoryTest {
 
     @Autowired
-    ProductRepository ProductRepository;
+
+    ProductRepository productRepository;
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -33,21 +34,22 @@ class ProductRepositoryTest {
     void save() {
         Product product = new Product();
 
-        product.setProductName("p3");
+        product.setName("p3");
         product.setPrice(150);
         product.setStock(200);
-        product.setRegisterDate(new Date());
-        product.setProductInfo("p3설명");
+        product.setRegisteredDate(new Date());
+        product.setInfo("p3설명");
         product.setMember(memberRepository.findById(3L).get());
         product.setCategory(categoryRepository.findById(3L).get());
 
-        ProductRepository.save(product);
+        productRepository.save(product);
     }
 
     @Test
     @Transactional
     void findAll() {
-        List<Product> productList = ProductRepository.findAll();
+        List<Product> productList = productRepository.findAll();
+        System.out.println("productList.size() = " + productList.size());
         for (Product product : productList) {
             System.out.println("product = " + product);
         }
@@ -55,14 +57,13 @@ class ProductRepositoryTest {
 
     @Test
     void findByProductId() {
-        Optional<Product> product = ProductRepository.findById(1L);
+        Optional<Product> product = productRepository.findById(1L);
         assertThat(product.get().getId()).isEqualTo(1L);
     }
 
     @Test
     @Transactional
     void deleteById() {
-        ProductRepository.deleteById(2L);
+        productRepository.deleteById(2L);
     }
-
 }

@@ -1,56 +1,41 @@
 package com.coupang.clone.controller.dto;
 
 import com.coupang.clone.domain.Product;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @Getter
+@Setter
+@ToString
 public class ProductRegisterRequestDto {
-    private Long ProductId;
     private String productName;
     private int price;
-//    private String productOwnerId;
+    private String productOwnerId;
     private int stock; //재고
-    private Date registerDate;
     private String productInfo;
+    private String categoryName;
+    private MultipartFile multipartFile;
 
     @Builder
-    public ProductRegisterRequestDto( String productName, int price, String productOwnerId, int stock, Date registerDate, String productInfo) {
+    public ProductRegisterRequestDto(String productName, int price, String productOwnerId, int stock, String productInfo, String categoryName,MultipartFile multipartFile) {
         this.productName = productName;
         this.price = price;
-//        this.productOwnerId = productOwnerId;
+        this.productOwnerId = productOwnerId;
         this.stock = stock;
-        this.registerDate = registerDate;
         this.productInfo = productInfo;
+        this.categoryName = categoryName;
+        this.multipartFile = multipartFile;
     }
-
-
 
     public Product toEntity(){
         return Product.builder()
-                .productName(productName)
+                .name(productName)
                 .price(price)
                 .stock(stock)
-                .registerDate(registerDate)
-                .productInfo(productInfo)
+                .info(productInfo)
                 .build();
-    }
-
-    @Override
-    public String toString() {
-        return "ProductRegisterRequestDto{" +
-//                "categoryId=" + categoryId +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-//                ", productOwnerId='" + productOwnerId + '\'' +
-                ", stock=" + stock +
-                ", registerDate=" + registerDate +
-                ", productInfo='" + productInfo + '\'' +
-                '}';
     }
 }

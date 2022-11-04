@@ -4,45 +4,32 @@ import com.coupang.clone.domain.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class ProductResponseDto {
-    private Long ProductId;
-    private String productName;
+    private Long productId;
+    private String name;
     private int price;
     private int stock; //재고
     private Date registerDate;
-    private String productInfo;
+    private String info;
 
     public ProductResponseDto(Product product) {
-        this.ProductId = product.getId();
-        this.productName = product.getProductName();
+        this.productId = product.getId();
+        this.name = product.getName();
         this.price = product.getPrice();
         this.stock = product.getStock();
-        this.registerDate = product.getRegisterDate();
-        this.productInfo = product.getProductInfo();
+        this.registerDate = product.getRegisteredDate();
+        this.info = product.getInfo();
     }
 
-    public ProductResponseDto getInstanceByEntity(Product product) {
-        ProductResponseDto productResponseDto = new ProductResponseDto(product);
-        return productResponseDto;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductResponseDto{" +
-                "ProductId=" + ProductId +
-//                ", categoryId=" + categoryId +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-//                ", productOwnerId='" + productOwnerId + '\'' +
-                ", stock=" + stock +
-                ", registerDate=" + registerDate +
-                ", productInfo='" + productInfo + '\'' +
-                '}';
+    public ProductResponseDto toDto(Product product) {
+        return new ProductResponseDto(product);
     }
 }
